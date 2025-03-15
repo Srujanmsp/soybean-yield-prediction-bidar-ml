@@ -1,0 +1,400 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soybean Yield Prediction</title>
+</head>
+<body>
+    <h2>Soybean Yield Prediction</h2>
+    <form action="/predict" method="post">
+        Area (ha): <input type="text" name="area" required><br>
+        Rainfall (mm): <input type="text" name="rainfall" required><br>
+        Temperature (°C): <input type="text" name="temperature" required><br>
+
+        Soil Type:
+        <select name="soil_type" required>
+            {% for soil in soil_types %}
+                <option value="{{ soil }}">{{ soil }}</option>
+            {% endfor %}
+        </select><br>
+
+        Nitrogen: <input type="text" name="nitrogen" required><br>
+        Phosphorus: <input type="text" name="phosphorus" required><br>
+        Potassium: <input type="text" name="potassium" required><br>
+        Humidity (%): <input type="text" name="humidity" required><br>
+
+        Season:
+        <select name="season" required>
+            {% for s in seasons %}
+                <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+        </select><br>
+
+        Location:
+        <select name="location" required>
+            {% for loc in locations %}
+                <option value="{{ loc }}">{{ loc }}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit">Predict Yield</button>
+    </form>
+    
+    {% if prediction %}
+        <h3>{{ prediction }}</h3>
+    {% endif %}
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soybean Crop Yield Prediction</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Tamma+2&family=Noto+Sans+Kannada:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/static/images/i.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: rgb(18, 17, 17);
+            text-align: center;
+        }
+
+        .navbar-nav {
+        text-align: right; /* Align items to the right */
+        width: auto;       /* Prevent full-width expansion */
+        }
+
+        .navbar-collapse {
+        flex-grow: 0; /* Prevents the menu from expanding across the screen */
+        }
+
+        .navbar-toggler {
+        border: 2px solid #32CD32;
+        border-radius: 5px;
+        }
+
+        .navbar-nav .nav-link:hover {
+        color: #ffeb3b !important;
+        }
+
+        .navbar-custom {
+            background: rgba(225, 220, 220, 0.7);;
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+        color: #32CD32 !important;
+        font-weight: bold;
+        }
+
+        .kannada {
+            font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .form-container {
+            background: rgba(239, 235, 235, 0.9);
+            padding: 25px;
+            color: black;
+            display: inline-block;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        footer {
+            background: rgba(225, 220, 220, 0.7);
+            padding: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div style="height: 60px;"></div>
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top" style="background: rgba(225, 220, 220, 0.7);">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#home" style="color: #32CD32; font-size: 1.4rem;">Soybean Yield Prediction</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#prediction-form">Predict</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#guidance">Farmer Guidance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#suggestions">Healthy Yield Suggestions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+
+    <section id="home" class="py-5">
+        <div class="kannada" style="color: #000000;"></div>
+        <!-- Information & History Section -->
+        <div class="container">
+            <div class="row g-4">
+                <!-- Combined Section: Soybean Information & History -->
+                <div class="col-md-12">
+                    <div class="p-4 rounded text-dark" style="display: flex; text-align: justify;background: rgba(225, 220, 220, 0.7);box-shadow: 0 0 10px">
+                        
+                        <!-- Soybean Information -->
+                        <div style="width: 60%; padding-right: 20px;">
+                            <h3 class="text-primary fw-bold">Soybean Information/ಸೋಯಾಬೀನ್ ಮಾಹಿತಿ</h3>
+                            <p style="color: #000000;">
+                                Soybean is an important crop in Bidar, Soybean is a widely grown crop known for its high protein and oil content. It is used in many food products like soy milk, tofu, and soy flour. Soybean oil is commonly used for cooking, and its byproduct, soybean meal, is a key ingredient in animal feed. Besides food, soybeans are also used in making biodiesel and other industrial products. They help improve soil fertility by naturally adding nitrogen, making them beneficial for farming. Due to their versatility and nutritional value, soybeans play an important role in both agriculture and the food industry.
+                            </p>
+                            
+                            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif; font-size: 18px; line-height: 1.6;">
+                                ಸೋಯಾಬೀನ್ ಹೈ ಪ್ರೋಟೀನ್ ಮತ್ತು ತೈಲಾಂಶದ ಸಮೃದ್ಧಿಯುಳ್ಳ ವ್ಯಾಪಕವಾಗಿ ಬೆಳೆದ ಒಂದು ಬೆಳೆಯಾಗಿದೆ. ಇದು ಸೋಯಾ ಹಾಲು, ಟೋಫು, ಸೋಯಾ ಹಿಟ್ಟು ಮತ್ತು ಇತರ ಆಹಾರ ಉತ್ಪನ್ನಗಳಲ್ಲಿ ಬಳಸಲಾಗುತ್ತದೆ. ಸೋಯಾಬೀನ್ ಎಣ್ಣೆಯನ್ನು ಸಾಮಾನ್ಯವಾಗಿ ಅಡುಗೆಗಾಗಿ ಬಳಸಲಾಗುತ್ತಿದ್ದು, ಇದರ ಉಪಉತ್ಪನ್ನವಾದ ಸೋಯಾಬೀನ್ ಮೆಲ್ ಪ್ರಾಣಿಗಳ ಆಹಾರಕ್ಕೆ ಪ್ರಮುಖ ಪದಾರ್ಥವಾಗಿದೆ. ಆಹಾರ ಉಪಯೋಗದ ಹೊರತಾಗಿಯೂ, ಸೋಯಾಬೀನ್ ಅನ್ನು ಬಯೋಡೀಸೆಲ್ ಮತ್ತು ಇತರ ಕೈಗಾರಿಕಾ ಉತ್ಪನ್ನಗಳ ತಯಾರಿಕೆಯಲ್ಲಿ ಸಹ ಬಳಸಲಾಗುತ್ತದೆ. ಮಣ್ಣಿಗೆ ನೈಸರ್ಗಿಕವಾಗಿ ನೈಟ್ರೋಜನ್ ಸೇರಿಸುವ ಮೂಲಕ ಮಣ್ಣಿನ ಫಲಶಕ್ತಿಯನ್ನು ಹೆಚ್ಚಿಸುವ ಕಾರಣ, ಇದು ಕೃಷಿಗೆ ಬಹಳ ಉಪಯುಕ್ತವಾಗಿದೆ. ಅದರ ಬಹುಮುಖ ಬಳಕೆ ಮತ್ತು ಪೌಷ್ಟಿಕಮೌಲ್ಯದ ಕಾರಣ, ಸೋಯಾಬೀನ್ ಕೃಷಿ ಮತ್ತು ಆಹಾರ ಉದ್ಯಮದಲ್ಲಿ ಪ್ರಮುಖ ಪಾತ್ರ ವಹಿಸುತ್ತದೆ.
+                            </p>
+                            
+                            </div>
+                        
+                        <!-- Soybean History -->
+                        <div style="width: 40%; border-left: 3px solid #1e4b7a; padding-left: 20px;">
+                            <h3 class="text-primary fw-bold">History/ಇತಿಹಾಸ</h3>
+                            <!-- <img src="{{ url_for('static', filename='images/agri.png') }}" alt="Quality Seeds" style="width: 50%; height: 30%; border-radius: 8px;"> -->
+                            <img src="{{ url_for('static', filename='images/agri.png') }}" alt="Quality Seeds" style="width: 80%; height: 40%; border-radius: 8px; display: block; margin: auto;">
+                            <p></p>            
+                            <p style="color: #000000;">
+                                Bidar, a district in the northern part of Karnataka, has a rich agricultural background, and soybean cultivation has become an essential part of its farming landscape. The district's favorable climate, fertile soil, and evolving agricultural practices have contributed to the successful growth of soybean crops.
+                            </p >
+                            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">
+                                ಕರ್ನಾಟಕದ ಉತ್ತರ ಭಾಗದ ಜಿಲ್ಲೆಯಾದ ಬೀದರ್ ಶ್ರೀಮಂತ ಕೃಷಿ ಹಿನ್ನೆಲೆಯನ್ನು ಹೊಂದಿದ್ದು, ಸೋಯಾಬೀನ್ ಕೃಷಿಯು ಅದರ ಕೃಷಿ ಭೂದೃಶ್ಯದ ಅತ್ಯಗತ್ಯ ಭಾಗವಾಗಿದೆ. ಜಿಲ್ಲೆಯ ಅನುಕೂಲಕರ ಹವಾಮಾನ, ಫಲವತ್ತಾದ ಮಣ್ಣು ಮತ್ತು ವಿಕಸನಗೊಳ್ಳುತ್ತಿರುವ ಕೃಷಿ ಪದ್ಧತಿಗಳು ಸೋಯಾಬೀನ್ ಬೆಳೆಗಳ ಯಶಸ್ವಿ ಬೆಳವಣಿಗೆಗೆ ಕಾರಣವಾಗಿವೆ.
+                            </p>                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="height: 180px;"></div>
+    </section>
+
+    <section id="prediction-form" class="py-5">
+        <h2 class="kannada" style="color: #000000; font-size: 300%;">Welcome to Soybean Yield Prediction</h2>
+        <p class="kannada" style="color: #000000;">ಸೋಯಾಬೀನ್ ಬೆಳೆಯ ಇಳುವರಿ ಮುನ್ಸೂಚನೆ ಮಾಡೋಣ!</p>
+
+        <div class="container d-flex justify-content-center">
+            <div class="form-container text-dark rounded box-shadow text-center" 
+                style="max-width: 600px; width: 100%; background: rgba(225, 220, 220, 0.7); box-shadow: 0 0 10px;">
+                <h3 class="mb-4 text-primary fw-bold">Enter Crop Details</h3>
+                
+                <form action="/predict" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Location:</label>
+                            <select name="location" class="form-select form-control-lg border-primary" required>
+                                {% for loc in locations %}
+                                    <option value="{{ loc }}">{{ loc }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Area (in hectares):</label>
+                            <input type="number" name="area" class="form-control form-control-lg border-primary" required placeholder="Enter area">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Rainfall (in mm):</label>
+                            <input type="number" name="rainfall" class="form-control form-control-lg border-primary" required placeholder="Enter rainfall">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Temperature (in °C):</label>
+                            <input type="number" name="temperature" class="form-control form-control-lg border-primary" required placeholder="Enter temperature">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Soil Type:</label>
+                            <select name="soil_type" class="form-select form-control-lg border-primary" required>
+                                {% for soil in soil_types %}
+                                    <option value="{{ soil }}">{{ soil }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nitrogen:</label>
+                            <input type="number" name="nitrogen" class="form-control form-control-lg border-primary" required placeholder="Enter nitrogen level">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Phosphorus:</label>
+                            <input type="number" name="phosphorus" class="form-control form-control-lg border-primary" required placeholder="Enter phosphorus level">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Potassium:</label>
+                            <input type="number" name="potassium" class="form-control form-control-lg border-primary" required placeholder="Enter potassium level">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Humidity (in %):</label>
+                            <input type="number" name="humidity" class="form-control form-control-lg border-primary" required placeholder="Enter humidity level">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Season:</label>
+                            <select name="season" class="form-select form-control-lg border-primary" required>
+                                {% for s in seasons %}
+                                    <option value="{{ s }}">{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 mt-4 btn-lg shadow">🌾 Predict Yield</button>
+                </form>
+
+                {% if prediction %}
+                    <h3 class="mt-3 text-success">{{ prediction }}</h3>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    
+
+    <section id="guidance" class="container" >
+        <body style="font-family: Arial, sans-serif; text-align: center;">
+
+            <header style="padding: 15px; color: rgb(255, 255, 255); font-size: 15px;">
+        <h2 class="kannada" style="color: #000000;font-size:300%;">Farmer's Guide </h2>
+        <h2 class="kannada" style="color: #000000;">ರೈತರ ಮಾರ್ಗದರ್ಶಿ</h2>
+        <!-- <p><strong>Location (ಸ್ಥಳ):</strong> Bidar has a semi-arid climate with moderate rainfall. The best months for soybean cultivation are June to September. (ಬೀದರದಲ್ಲಿ ಮಧ್ಯಮ ಮಳೆಯೊಂದಿಗೆ ಅರೆ ಒಣ ವಾತಾವರಣವಿದೆ. ಸೋಯಾಬೀನ್ ಕೃಷಿಗೆ ಉತ್ತಮ ತಿಂಗಳುಗಳು ಜೂನ್ ರಿಂದ ಸೆಪ್ಟೆಂಬರ್.)</p>
+        <p><strong>Soil Type (ಮಣ್ಣಿನ ಪ್ರಕಾರ):</strong> Loam and clayey soil are best for soybean farming in Bidar. Proper soil testing is recommended. (ಬೀದರದಲ್ಲಿ ಸೋಯಾಬೀನ್ ಕೃಷಿಗೆ ಮಿಶ್ರ ಮತ್ತು ಮಣ್ಣಿನ ಮಣ್ಣು ಉತ್ತಮವಾಗಿದೆ. ಸರಿಯಾದ ಮಣ್ಣಿನ ಪರೀಕ್ಷೆ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ.)</p>
+        <p><strong>Temperature (ತಾಪಮಾನ):</strong> The optimal temperature range for soybean growth in Bidar is 20-30°C. Higher temperatures can reduce yield. (ಬೀದರದಲ್ಲಿ ಸೋಯಾಬೀನ್ ಬೆಳೆಯ ಉತ್ತಮ ತಾಪಮಾನ ಶ್ರೇಣಿ 20-30°C. ಹೆಚ್ಚು ತಾಪಮಾನವು ಉತ್ಪಾದನೆಯನ್ನು ಕಡಿಮೆ ಮಾಡಬಹುದು.)</p>
+        <p><strong>Humidity (ಆರ್ದ್ರತೆ):</strong> Soybeans require moderate humidity (50-70%) for better growth. Lower humidity can lead to water stress. (ಸೋಯಾಬೀನ್ ಉತ್ತಮ ಬೆಳವಣಿಗೆಗೆ 50-70% ಮಧ್ಯಮ ಆರ್ದ್ರತೆ ಅಗತ್ಯವಿದೆ. ಕಡಿಮೆ ಆರ್ದ್ರತೆ ನೀರಿನ ಒತ್ತಡವನ್ನು ಉಂಟುಮಾಡಬಹುದು.)</p>
+        <p><strong>Rainfall (ಮಳೆಯ ಪ್ರಮಾಣ):</strong> Bidar receives an average annual rainfall of 700-1200 mm, which is suitable for soybean cultivation. (ಬೀದರದಲ್ಲಿ ವರ್ಷಪೂರ್ತಿ ಸರಾಸರಿ 700-1200 mm ಮಳೆಯು ಬೀಳುತ್ತದೆ, ಇದು ಸೋಯಾಬೀನ್ ಬೆಳೆಗೆ ಸೂಕ್ತವಾಗಿದೆ.)</p>
+        <p><strong>Nitrogen (ನೈಟ್ರೋಜನ್):</strong> Enhances vegetative growth and leaf development. Recommended dosage: 20-40 kg/ha. (ಸಸ್ಯದ ಬೆಳವಣಿಗೆಯನ್ನು ಮತ್ತು ಎಲೆಗಳ ಅಭಿವೃದ್ಧಿಯನ್ನು ಉತ್ತೇಜಿಸುತ್ತದೆ. ಶಿಫಾರಸು ಮಾಡಲಾದ ಪ್ರಮಾಣ: 20-40 kg/ha.)</p>
+        <p><strong>Phosphorus (ಫಾಸ್ಫರಸ್):</strong> Essential for root development and seed formation. Recommended dosage: 30-50 kg/ha. (ಬೇರುಗಳ ಬೆಳವಣಿಗೆಗೆ ಮತ್ತು ಬೀಜ ರಚನೆಗೆ ಅಗತ್ಯ. ಶಿಫಾರಸು ಮಾಡಲಾದ ಪ್ರಮಾಣ: 30-50 kg/ha.)</p>
+        <p><strong>Potassium (ಪೊಟಾಶಿಯಂ):</strong> Helps in disease resistance and water absorption. Recommended dosage: 40-60 kg/ha. (ರೋಗ ನಿರೋಧಕ ಶಕ್ತಿಯನ್ನು ಸುಧಾರಿಸುತ್ತದೆ ಮತ್ತು ನೀರಿನ ಶೋಷಣೆಯನ್ನು ಉತ್ತೇಜಿಸುತ್ತದೆ. ಶಿಫಾರಸು ಮಾಡಲಾದ ಪ್ರಮಾಣ: 40-60 kg/ha.)</p> -->
+        <div class="rounded shadow" style="max-width: 800px; margin: 20px auto; background: rgba(225, 220, 220, 0.7); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px ">
+
+            <!-- Location -->
+            <!-- <h2 style="color: #333;">Location (ಸ್ಥಳ)</h2>
+            <p style="color: #555;">Bidar has a semi-arid climate with moderate rainfall. The best months for soybean cultivation are June to September.</p>
+            <p style="color: #555;">ಬೀದರದಲ್ಲಿ ಮಧ್ಯಮ ಮಳೆಯೊಂದಿಗೆ ಅರೆ ಒಣ ವಾತಾವರಣವಿದೆ. ಸೋಯಾಬೀನ್ ಕೃಷಿಗೆ ಉತ್ತಮ ತಿಂಗಳುಗಳು ಜೂನ್ ರಿಂದ ಸೆಪ್ಟೆಂಬರ್.</p>
+     -->
+            <!-- Soil Type -->
+            <h2 style="color: #333;">Soil Type (ಮಣ್ಣಿನ ಪ್ರಕಾರ)</h2>
+            <p style="color: #000000;">Loam and clayey soil are best for soybean farming in Bidar. Proper soil testing is recommended.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಬೀದರದಲ್ಲಿ ಸೋಯಾಬೀನ್ ಕೃಷಿಗೆ ಮಿಶ್ರ ಮತ್ತು ಮಣ್ಣಿನ ಮಣ್ಣು ಉತ್ತಮವಾಗಿದೆ. ಸರಿಯಾದ ಮಣ್ಣಿನ ಪರೀಕ್ಷೆ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ.</p>
+    
+            <!-- Temperature -->
+            <h2 style="color: #333;">Temperature (ತಾಪಮಾನ)</h2>
+            <p style="color: #000000;">The optimal temperature range for soybean growth in Bidar is 20-30°C. Higher temperatures can reduce yield.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಬೀದರದಲ್ಲಿ ಸೋಯಾಬೀನ್ ಬೆಳೆಯ ಉತ್ತಮ ತಾಪಮಾನ ಶ್ರೇಣಿ 20-30°C. ಹೆಚ್ಚು ತಾಪಮಾನವು ಉತ್ಪಾದನೆಯನ್ನು ಕಡಿಮೆ ಮಾಡಬಹುದು.</p>
+    
+            <!-- Humidity -->
+            <h2 style="color: #333;">Humidity (ಆರ್ದ್ರತೆ)</h2>
+            <p style="color: #000000;">Soybeans require moderate humidity (50-70%) for better growth. Lower humidity can lead to water stress.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಸೋಯಾಬೀನ್ ಉತ್ತಮ ಬೆಳವಣಿಗೆಗೆ 50-70% ಮಧ್ಯಮ ಆರ್ದ್ರತೆ ಅಗತ್ಯವಿದೆ. ಕಡಿಮೆ ಆರ್ದ್ರತೆ ನೀರಿನ ಒತ್ತಡವನ್ನು ಉಂಟುಮಾಡಬಹುದು.</p>
+    
+            <!-- Rainfall -->
+            <h2 style="color: #333;">Rainfall (ಮಳೆಯ ಪ್ರಮಾಣ)</h2>
+            <p style="color: #000000;">Bidar receives an average annual rainfall of 700-1200 mm, which is suitable for soybean cultivation.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಬೀದರದಲ್ಲಿ ವರ್ಷಪೂರ್ತಿ ಸರಾಸರಿ 700-1200 mm ಮಳೆಯು ಬೀಳುತ್ತದೆ, ಇದು ಸೋಯಾಬೀನ್ ಬೆಳೆಗೆ ಸೂಕ್ತವಾಗಿದೆ.</p>
+    
+            <!-- Nitrogen -->
+            <h2 style="color: #333;">Nitrogen (ನೈಟ್ರೋಜನ್)</h2>
+            <p style="color: #000000;">Enhances vegetative growth and leaf development. Recommended dosage: 20-40 kg/ha.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಸಸ್ಯದ ಬೆಳವಣಿಗೆಯನ್ನು ಮತ್ತು ಎಲೆಗಳ ಅಭಿವೃದ್ಧಿಯನ್ನು ಉತ್ತೇಜಿಸುತ್ತದೆ. ಶಿಫಾರಸು ಮಾಡಲಾದ ಪ್ರಮಾಣ: 20-40 kg/ha.</p>
+    
+            <!-- Phosphorus -->
+            <h2 style="color: #333;">Phosphorus (ಫಾಸ್ಫರಸ್)</h2>
+           
+            <p style="color: #000000;">Essential for root development and seed formation. Recommended dosage: 30-50 kg/ha.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಬೇರುಗಳ ಬೆಳವಣಿಗೆಗೆ ಮತ್ತು ಬೀಜ ರಚನೆಗೆ ಅಗತ್ಯ. ಶಿಫಾರಸು ಮಾಡಲಾದ ಪ್ರಮಾಣ: 30-50 kg/ha.</p>
+    
+            <!-- Potassium -->
+            <h2 style="color: #333;">Potassium (ಪೊಟಾಶಿಯಂ)</h2>
+            
+            <p style="color: #000000;">Helps in disease resistance and water absorption. Recommended dosage: 40-60 kg/ha.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ರೋಗ ನಿರೋಧಕ ಶಕ್ತಿಯನ್ನು ಸುಧಾರಿಸುತ್ತದೆ ಮತ್ತು ನೀರಿನ ಶೋಷಣೆಯನ್ನು ಉತ್ತೇಜಿಸುತ್ತದೆ. ಶಿಫಾರಸು ಮಾಡಲಾದ ಪ್ರಮಾಣ: 40-60 kg/ha.</p>
+    
+        </div>
+    </section>
+
+    <section id="suggestions">
+        <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; text-align: center;">
+
+            <header style="padding: 15px; color: white; font-size: 15px;">
+                <h2 class="kannada" style="color: #000000;font-size: 300%;">Yield Suggestions</h2>
+                <h2 class="kannada" style="color: #000000;">ಕೃಷಿ ಉಳಿತಾಯ ಹೆಚ್ಚಿಸಲು ಸಲಹೆಗಳು</h2>
+        <!-- <h2>Yield Suggestions</h2> -->
+        <!-- <p>Maintain soil health, use quality seeds, and follow seasonal patterns.</p>
+        <p class="kannada">ಮಣ್ಣು ಆರೋಗ್ಯಕರವಾಗಿರಲಿ, ಉತ್ತಮ ಬೀಜಗಳನ್ನು ಬಳಸಿ, ಮತ್ತು ಹಂಗಾಮುಟ್ಟಿನ ನಿಯಮಗಳನ್ನು ಅನುಸರಿಸಿ.</p> -->
+        <div class="rounded shadow" style="max-width: 800px; margin: 20px auto; background: rgba(225, 220, 220, 0.7);box-shadow: 0 0 10px; padding: 20px; border-radius: 10px;">
+
+            <!-- Quality Seeds -->
+            <h2 style="color: #333;">1. Use Quality Seeds / ಉತ್ತಮ ಬೀಜಗಳನ್ನು ಬಳಸಿ</h2>
+            <img src="{{ url_for('static', filename='images/seed.jpg') }}" alt="Quality Seeds" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Choose high-quality, disease-resistant seeds suitable for your region to enhance crop productivity.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ನಿಮ್ಮ ಪ್ರದೇಶಕ್ಕೆ ತಕ್ಕಂತಹ ಉತ್ತಮ ಗುಣಮಟ್ಟದ, ರೋಗ ನಿರೋಧಕ ಬೀಜಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡಿ, ಬೆಳೆ ಉತ್ಪಾದನೆ ಹೆಚ್ಚಿಸಿ.</p>
+    
+            <!-- Proper Irrigation -->
+            <h2 style="color: #333;">2. Implement Proper Irrigation / ಸರಿಯಾದ ನೀರಾವರಿ ವಿಧಾನ ಅನುಸರಿಸಿ</h2>
+            <img src="{{ url_for('static', filename='images/irrigation.jpg') }}" alt="Irrigation" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Use drip irrigation or rainwater harvesting to ensure crops receive adequate water without wastage.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಡ್ರಿಪ್ ನೀರಾವರಿ ಅಥವಾ ಮಳಿಗರ ಹಾರ್ವೆಸ್ಟಿಂಗ್ ಬಳಸಿ, ಬೆಳೆಗಳಿಗೆ ಸಮರ್ಪಕ ನೀರು ಒದಗಿಸಲು.</p>
+    
+            <!-- Soil Testing -->
+            <h2 style="color: #333;">3. Soil Testing & Fertilization / ಮಣ್ಣು ಪರೀಕ್ಷೆ ಮತ್ತು ರಸಗೊಬ್ಬರ</h2>
+            <img src="{{ url_for('static', filename='images/soil-testing.jpg') }}" alt="Soil Testing" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Test soil regularly and apply organic manure or fertilizers based on nutrient requirements.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಮಣ್ಣನ್ನು ನಿಯಮಿತವಾಗಿ ಪರೀಕ್ಷಿಸಿ, ಪೋಷಕಾಂಶ ಅಗತ್ಯತೆಗಳ ಆಧಾರದಲ್ಲಿ ಪ್ರಾಕೃತಿಕ ಗೊಬ್ಬರವನ್ನು ಬಳಸಿ.</p>
+    
+            <!-- Crop Rotation -->
+            <h2 style="color: #333;">4. Crop Rotation & Diversification / ಬೆಳೆ ಪರಿವರ್ತನೆ ಮತ್ತು ವೈವಿಧ್ಯತೆ</h2>
+            <img src="{{ url_for('static', filename='images/Crop-Rotation-Blog__1_.jpg') }}" alt="Crop Rotation" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Rotate crops to prevent soil depletion and pests. Diversify crops to improve resilience.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಮಣ್ಣಿನ ಗುಣಮುಖತ್ವ ಕಾಪಾಡಲು ಮತ್ತು ಹಾನಿಕಾರಕ ಕೀಟಗಳ ನಿಯಂತ್ರಣಕ್ಕೆ ಬೆಳೆ ಪರಿವರ್ತನೆ ಮಾಡಿ.</p>
+    
+            <!-- Smart Farming -->
+            <h2 style="color: #333;">5. Use Technology & Smart Farming / ತಂತ್ರಜ್ಞಾನ ಮತ್ತು ಸುಜ್ಞಾನ ಕೃಷಿ</h2>
+            <img src="{{ url_for('static', filename='images/smart-farming.jpg') }}" alt="Smart Farming" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Leverage AI, sensors, and drones for better monitoring and decision-making in farming.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಎಐ, ಸಂವೇದಕಗಳು ಮತ್ತು ಡ್ರೋನ್ ಗಳನ್ನು ಬಳಸಿಕೊಂಡು ಸುಜ್ಞಾನ ಕೃಷಿಯನ್ನು ಅನುಸರಿಸಿ.</p>
+    
+            <!-- Pest Control -->
+            <h2 style="color: #333;">6. Weed & Pest Control / ಕೀಟ ನಿರ್ವಹಣೆ ಮತ್ತು ಕುಡಿಯಾ ಗಿಡ ನಿಯಂತ್ರಣ</h2>
+            <img src="{{ url_for('static', filename='images/pest-control.jpg') }}" alt="Pest Control" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Apply natural pest control methods and remove weeds regularly to protect crops.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ನೈಸರ್ಗಿಕ ಕೀಟ ನಿಯಂತ್ರಣ ವಿಧಾನಗಳನ್ನು ಅನುಸರಿಸಿ ಮತ್ತು ಬೆಳೆ ರಕ್ಷಿಸಲು ನಿಯಮಿತವಾಗಿ ತೊಲೆಗಿಡಗಳನ್ನು ತೆಗೆಯಿರಿ.</p>
+    
+            <!-- Timely Harvesting -->
+            <h2 style="color: #333;">7. Timely Harvesting / ಸಮಯೋಚಿತ ಕೊಯ್ಲು</h2>
+            <img src="{{ url_for('static', filename='images/harvesting.jpg') }}" alt="Harvesting" style="width: 25%; border-radius: 8px;">
+            <p style="color: #000000;">Harvest crops at the right time to maximize yield and maintain quality.</p>
+            <p style="color: #000000;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">ಬೆಳೆಗಳ ಸಮಯೋಚಿತ ಕೊಯ್ಲು ಮಾಡಿ, ಉತ್ಪಾದನೆ ಹೆಚ್ಚಿಸಿ ಮತ್ತು ಗುಣಮಟ್ಟವನ್ನು ಕಾಪಾಡಿ.</p>
+    
+        </div>
+    </section>
+
+    <section id="about" style="max-width: 900px; margin: auto; padding: 20px; background: rgba(225, 220, 220, 0.7);border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;">
+        <h2 class="kannada" style="color: #000000;font-size: 200%;" style="color: #4CAF50; font-size: 24px;">About / ನಮ್ಮ ಬಗ್ಗೆ</h2>
+    
+        <!-- Image for better visual appeal -->
+        <!-- <img src="harvesting.jpg" alt="Farmers Guide" style="width: 40%; border-radius: 8px; margin-bottom: 15px;">
+     -->
+     <img src="{{ url_for('static', filename='images/soya.jpg') }}" alt="Soybean">
+
+        <p style="color: #000000; font-size: 16px; text-align: justify;">
+            This web application helps farmers predict soybean yield based on their location, soil conditions, rainfall, temperature, humidity, and many more inputs. Our goal is to guide farmers in making informed decisions for better crop production.
+        </p>
+    
+        <p style="color: #000000; font-size: 16px; text-align: justify;font-family: 'Baloo Tamma 2', 'Noto Sans Kannada', sans-serif;">
+            ಈ ವೆಬ್ ಅಪ್ಲಿಕೇಶನ್ ರೈತರಿಗೆ ತಮ್ಮ ಸ್ಥಳ, ಮಣ್ಣಿನ ಸ್ಥಿತಿ, ಮಳೆ, ತಾಪಮಾನ, ಆರ್ದ್ರತೆ ಮತ್ತು ರಸಗೊಬ್ಬರ ದಾಖಲೆಗಳ ಆಧಾರದ ಮೇಲೆ ಸೋಯಾಬೀನ್ ಇಳುವರಿಯನ್ನು ಊಹಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ. ನಮ್ಮ ಉದ್ದೇಶ ಉತ್ತಮ ಕೃಷಿ ಉತ್ಪಾದನೆಗಾಗಿ ರೈತರಿಗೆ ಮಾಹಿತಿಯುಳ್ಳ ನಿರ್ಧಾರಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳಲು ಮಾರ್ಗದರ್ಶನ ನೀಡುವುದು.
+        </p>
+    </section>
+    <div style="height: 60px;"></div>
+
+    <footer>
+        <p>&copy; 2025 Soybean Yield Prediction</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
