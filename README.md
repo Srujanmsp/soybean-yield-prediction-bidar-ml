@@ -50,7 +50,7 @@ The dataset used for training the model contains the following attributes:
 
 ---
 
-## Machine Learning Workflow
+## System Workflow
 
 1. Data collection and dataset preparation
 2. Data preprocessing and feature selection
@@ -62,9 +62,22 @@ The dataset used for training the model contains the following attributes:
 
 ---
 
-## Expected Outcome
+## How to Run the Project
 
-The trained model predicts the soybean yield based on input parameters such as rainfall, temperature, soil nutrients, and humidity. This helps in understanding how environmental conditions influence crop production.
+1. Clone the repository
+git clone https://github.com/your-username/soybean-yield-prediction-bidar-ml.git
+
+2. Navigate to the project folder
+cd soybean-yield-prediction-bidar-ml
+
+3. Install required dependencies
+pip install -r requirements.txt
+
+4. Run the Flask application
+python app.py
+
+5. Open the browser and go to
+http://127.0.0.1:5000
 
 ---
 
