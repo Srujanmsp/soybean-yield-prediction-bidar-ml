@@ -65,7 +65,7 @@ The dataset used for training the model contains the following attributes:
 ## How to Run the Project
 
 1. Clone the repository
-git clone https://github.com/your-username/soybean-yield-prediction-bidar-ml.git
+git clone https://github.com/Srujanmsp/soybean-yield-prediction-bidar-ml.git
 
 2. Navigate to the project folder
 cd soybean-yield-prediction-bidar-ml
